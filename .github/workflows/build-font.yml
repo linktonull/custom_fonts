@@ -34,25 +34,18 @@ jobs:
         # 确保 merge-otd 和 otfccbuild 具有执行权限
         run: |
           tree
-
-      - name: Build font files
-        run: |
           export PATH="$PWD/build:$PATH"
           chmod +x merge-otd
           chmod +x otfccbuild
           ./merge-otd -n "my font;Regular;Normal;Normal" YsabeauInfant-Italic.otd LXGWWenKai-Regular.otd Tinos-Regular.otd NotoSansMath-Regular.otd SC.otd  TC.otd HK.otd JP.otd KR.otd blobemoji.otd TwemojiMozilla.otd NotoColorEmoji.otd
 
-          # 构建 TTF 文件
-          # 假设 merge-otd 生成了 base.otd 文件
-          # 注意：根据你提供的错误日志，你的 otfccbuild 命令似乎改成了使用 YsabeauInfant-Italic.otd
-          # 请确认这里应该使用 base.otd 还是 YsabeauInfant-Italic.otd
-          # 我保留了原来的 base.otd，如果你需要使用 YsabeauInfant-Italic.otd 请自行修改
-          ./otfccbuild base.otd -O2 -o out.ttf
+      - name: Build font files
+        run: |
+          ./otfccbuild YsabeauInfant-Italic.otd -O2 -o out.ttf
 
           # 构建 OTF 文件
-          # 同上，请确认输入文件
-          ./otfccbuild base.otd -O2 -o out.otf
-        shell: bash # 明确指定使用 bash shell 执行脚本
+          ./otfccbuild YsabeauInfant-Italic.otd -O2 -o out.otf
+        shell: bash
 
       - name: Compress output files
         run: |
