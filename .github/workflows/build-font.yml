@@ -21,7 +21,7 @@ jobs:
       - name: Install p7zip
         run: |
           sudo apt-get update
-          sudo apt-get install -y p7zip-full
+          sudo apt-get install -y p7zip-full # 安装 p7zip 工具
 
       - name: Extract OTD zip archive
         # 解压分卷压缩文件，只需指定第一个文件，p7zip 会自动处理后续分卷
@@ -29,34 +29,32 @@ jobs:
         # -y 选项表示对所有询问都回答 Yes (覆盖现有文件)
         run: 7z x otd.zip.001 -o. -y
 
-
-      - name: Make build tools executable # <-- 添加了这个步骤
+      - name: Make build tools executable
         # 确保 merge-otd 和 otfccbuild 具有执行权限
         run: |
           tree
+          chmod +x ./merge-otd
+          chmod +x ./otfccbuild
           export PATH="$PWD/build:$PATH"
-          chmod +x merge-otd
-          chmod +x otfccbuild
           ./merge-otd -n "my font;Regular;Normal;Normal" YsabeauInfant-Italic.otd LXGWWenKai-Regular.otd Tinos-Regular.otd NotoSansMath-Regular.otd SC.otd  TC.otd HK.otd JP.otd KR.otd blobemoji.otd TwemojiMozilla.otd NotoColorEmoji.otd
 
       - name: Build font files
+        # 执行字体构建脚本
+        # 假设 merge-otd 和 otfccbuild 在仓库的 build 目录下
         run: |
           ./otfccbuild YsabeauInfant-Italic.otd -O2 -o out.ttf
-
-          # 构建 OTF 文件
           ./otfccbuild YsabeauInfant-Italic.otd -O2 -o out.otf
-        shell: bash
+        shell: bash # 明确指定使用 bash shell 执行脚本
 
-      - name: Compress output files
+      - name: Compress output files # <-- 修改了这个步骤
         run: |
           # 使用 tar.gz 进行最大压缩 (-9)
           # -c: 创建归档
-          # -z: 使用 gzip 压缩
           # -f: 指定归档文件名
-          # -C .: 切换到当前目录（可选，如果文件就在当前目录）
-          # --use-compress-program=gzip -9: 指定使用 gzip 并设置压缩级别为 9 (最大压缩)
-          tar -czf out.ttf.tar.gz -C . out.ttf --use-compress-program=gzip -9
-          tar -czf out.otf.tar.gz -C . out.otf --use-compress-program=gzip -9
+          # --use-compress-program="gzip -9": 指定使用外部程序 "gzip -9" 进行压缩
+          tar -cf out.ttf.tar.gz -C . out.ttf --use-compress-program="gzip -9"
+          tar -cf out.otf.tar.gz -C . out.otf --use-compress-program="gzip -9"
+          tar -cf YsabeauInfant-Italic.otd.tar.gz -C . YsabeauInfant-Italic.otd --use-compress-program="gzip -9"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4 # 使用上传 artifact 的 action
