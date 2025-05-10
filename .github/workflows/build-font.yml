@@ -52,16 +52,17 @@ jobs:
           # -c: 创建归档
           # -f: 指定归档文件名
           # --use-compress-program="gzip -9": 指定使用外部程序 "gzip -9" 进行压缩
-          tar -cf out.ttf.tar.gz -C . out.ttf --use-compress-program="gzip -9"
-          tar -cf out.otf.tar.gz -C . out.otf --use-compress-program="gzip -9"
-          tar -cf YsabeauInfant-Italic.otd.tar.gz -C . YsabeauInfant-Italic.otd --use-compress-program="gzip -9"
+          tar -cf out.ttf.tar.gz -C . out.ttf --use-compress-program="gzip -5"
+          tar -cf out.otf.tar.gz -C . out.otf --use-compress-program="gzip -5"
+          tar -cf YsabeauInfant-Italic.otd.tar.gz -C . YsabeauInfant-Italic.otd --use-compress-program="gzip -5"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4 # 使用上传 artifact 的 action
         with:
           name: built-fonts # artifact 的名称
           path: |
-            out.ttf.tar.gz
-            out.otf.tar.gz # 指定要上传的文件
-          retention-days: 5 # 可选：设置 artifact 的保留天数
+            ./YsabeauInfant-Italic.otd.tar.gz
+            ./out.ttf.tar.gz
+            ./out.otf.tar.gz
+          retention-days: 1 # 可选：设置 artifact 的保留天数
 
