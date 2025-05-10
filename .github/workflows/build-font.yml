@@ -34,8 +34,6 @@ jobs:
         # 确保 merge-otd 和 otfccbuild 具有执行权限
         run: |
           tree
-          chmod +x ./build/merge-otd
-          chmod +x ./build/otfccbuild
 
       - name: Build font files
         run: |
@@ -49,11 +47,11 @@ jobs:
           # 注意：根据你提供的错误日志，你的 otfccbuild 命令似乎改成了使用 YsabeauInfant-Italic.otd
           # 请确认这里应该使用 base.otd 还是 YsabeauInfant-Italic.otd
           # 我保留了原来的 base.otd，如果你需要使用 YsabeauInfant-Italic.otd 请自行修改
-          otfccbuild base.otd -O2 -o out.ttf
+          ./otfccbuild base.otd -O2 -o out.ttf
 
           # 构建 OTF 文件
           # 同上，请确认输入文件
-          otfccbuild base.otd -O2 -o out.otf
+          ./otfccbuild base.otd -O2 -o out.otf
         shell: bash # 明确指定使用 bash shell 执行脚本
 
       - name: Compress output files
